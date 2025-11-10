@@ -28,23 +28,23 @@ Steps included:
 - Converted `year` to factor and set `"Athletics"` as base sport  
 - Renamed `name` → `athlete`
 
-> These cleaning steps used advanced R functions (`left_join`, `gsub`, `fct_relevel`, `rename`), going beyond basic requirements. :contentReference[oaicite:0]{index=0}
+> These cleaning steps used advanced R functions (`left_join`, `gsub`, `fct_relevel`, `rename`), going beyond basic requirements.
 
 ---
 
 ## 📈 Exploratory Analysis
 
 ### 1. Age by Sport & Medal  
-Violin and boxplots show that sports like **Roque**, **Croquet**, and **Polo** have higher median athlete ages, emphasizing experience-based success. :contentReference[oaicite:1]{index=1}
+Violin and boxplots show that sports like **Roque**, **Croquet**, and **Polo** have higher median athlete ages, emphasizing experience-based success.
 
 ### 2. Top Cities by Medal Count  
-Bar charts reveal **London**, **Sydney**, and **Athina** as the most frequent hosts with large medal counts. :contentReference[oaicite:2]{index=2}
+Bar charts reveal **London**, **Sydney**, and **Athina** as the most frequent hosts with large medal counts. 
 
 ### 3. Physical Attributes  
 Scatterplots highlight:
 - **Age vs Weight**, colored by medal  
 - **Age vs Height**, colored by sex  
-These plots reveal clustering by sex and performance level. :contentReference[oaicite:3]{index=3}
+These plots reveal clustering by sex and performance level.
 
 ---
 
@@ -59,7 +59,7 @@ Built multiple **linear regression models** using `tidymodels`:
 **Results:**
 - Interaction terms improved model fit (lower RMSE, higher R²).  
 - Removing variables had minor effects.  
-- Best model: *Age model with interaction term*. :contentReference[oaicite:4]{index=4}
+- Best model: *Age model with interaction term*. 
 
 ---
 
@@ -67,14 +67,14 @@ Built multiple **linear regression models** using `tidymodels`:
 - **Older sports** (e.g., Roque, Croquet) favor experience.  
 - **Medal-winning athletes** tend to cluster in consistent physical ranges.  
 - **Age-height-weight** relationships differ by sex and medal type.  
-- **Best model** shows interactions between minimum age and medal predict age patterns effectively. :contentReference[oaicite:5]{index=5}
+- **Best model** shows interactions between minimum age and medal predict age patterns effectively.
 
 ---
 
 ## ⚠️ Limitations
 - Missing or incomplete records  
 - No inclusion of training, socioeconomic, or geopolitical variables  
-- Focus limited to certain sports — broader generalizations may vary :contentReference[oaicite:6]{index=6}
+- Focus limited to certain sports - broader generalizations may vary 
 
 ---
 
