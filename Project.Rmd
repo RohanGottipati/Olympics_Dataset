@@ -1,29 +1,17 @@
 ---
-title: "DATA100-Final Project"
-author: "Group 4"
-date: "December 10th, 2024"
+title: "Olympics Dataset Analysis"
 output: pdf_document
 ---
-
-Group Members: - Kush Patel (169087276)
-
--   Luke Veilands (169089973)
-
--   Marie Couto (169078846)
-
--   Navjot Janjua (169088994)
-
--   Rohan Gottipati (169085653)
 
 This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code.
 
 ### Introduction 
 
-Throughout the year we have worked a lot with the Olympics dataset. Hosted every 4 years, the Olympics is the biggest sporting event in the world and it reunites thousands of athletes from all different countries, genders, cultures, heights, ages and so on, trying their best to achieve a gold, silver or bronze medal. Being such a huge and diverse event, this also means there is plenty of data available to be explored and understood, and many insights to be found. This report delves into the patterns and trends within the Olympic dataset, exploring the attributes of medal-winning athletes, the distribution of success across different cities, and the relationships between key performance indicators such as age, weight, height, and sex. By exploring these factors we want to deeper understand what defines success at the Olympics.
+Hosted every 4 years, the Olympics is the biggest sporting event in the world and it reunites thousands of athletes from all different countries, genders, cultures, heights, ages and so on, trying their best to achieve a gold, silver or bronze medal. Being such a huge and diverse event, this also means there is plenty of data available to be explored and understood, and many insights to be found. This report delves into the patterns and trends within the Olympic dataset, exploring the attributes of medal-winning athletes, the distribution of success across different cities, and the relationships between key performance indicators such as age, weight, height, and sex. By exploring these factors we want to deeper understand what defines success at the Olympics.
 
 ### Goals/Research Questions 
 
-In this analysis we decided to focus on a couple of specific factors, such as the following:
+In this analysis I decided to focus on a couple of specific factors, such as the following:
 
 1.  Age Trends Across Top Sports: This aims to identify whether specific sports favor more experienced or older athletes.
 
@@ -156,7 +144,7 @@ ggplot(filtered_city_data, aes(x = reorder(city, count), y = count, fill = medal
 
 ### Conclusion 
 
-In our analysis we found the following insights:
+In my analysis I found the following insights:
 
 -   **Age and Experience:** Higher median ages in sports like Roque and Croquet emphasize the factor experience.
 
@@ -164,7 +152,7 @@ In our analysis we found the following insights:
 
 -   **Predictive Models:** The relationship between age and weight, categorized by medal status, suggests notable trends where medal-winning athletes tend to cluster around specific ranges of age and physical traits.
 
-These insights deepen our understanding of athletic success and how factors like age, height and sex contributes to the ultimate athlete goal of winning Olympic medals.
+These insights deepen my understanding of athletic success and how factors like age, height and sex contributes to the ultimate athlete goal of winning Olympic medals.
 
 ### Limitations 
 
