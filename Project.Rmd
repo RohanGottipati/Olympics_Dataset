@@ -1,0 +1,179 @@
+---
+title: "DATA100-Final Project"
+author: "Group 4"
+date: "December 10th, 2024"
+output: pdf_document
+---
+
+Group Members: - Kush Patel (169087276)
+
+-   Luke Veilands (169089973)
+
+-   Marie Couto (169078846)
+
+-   Navjot Janjua (169088994)
+
+-   Rohan Gottipati (169085653)
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code.
+
+### Introduction 
+
+Throughout the year we have worked a lot with the Olympics dataset. Hosted every 4 years, the Olympics is the biggest sporting event in the world and it reunites thousands of athletes from all different countries, genders, cultures, heights, ages and so on, trying their best to achieve a gold, silver or bronze medal. Being such a huge and diverse event, this also means there is plenty of data available to be explored and understood, and many insights to be found. This report delves into the patterns and trends within the Olympic dataset, exploring the attributes of medal-winning athletes, the distribution of success across different cities, and the relationships between key performance indicators such as age, weight, height, and sex. By exploring these factors we want to deeper understand what defines success at the Olympics.
+
+### Goals/Research Questions 
+
+In this analysis we decided to focus on a couple of specific factors, such as the following:
+
+1.  Age Trends Across Top Sports: This aims to identify whether specific sports favor more experienced or older athletes.
+
+2.  City-Level Performance: Which cities have historically hosted the most successful Olympic events in terms of medal counts?
+
+3.  Age, Height, Weight and Sex: how do these correlate with olympic success?
+
+4.  Predictive Modeling: Can patterns within the dataset be utilized to predict key outcomes, such as future winners?
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*.
+
+```{r}
+library(tidyverse)
+library(ggrepel)
+library(arrow)
+library(tidymodels)
+```
+
+```{r}
+olympics <- read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2024/2024-08-06/olympics.csv')
+
+olympics_1 <- olympics |> mutate(medal = if_else(is.na(medal), "None", medal))
+
+olympics_2 <- olympics_1 |> mutate(sport = str_replace_all(sport, "-", " "), event = str_replace_all(event, "-", " "))
+
+olympics_3 <- olympics_2[,-9]
+
+olympics_summary <- olympics_3 |>
+  group_by(sport) |>
+  summarise(avg_age=mean(age, na.rm = TRUE), min_age=min(age, na.rm = TRUE), max_age=max(age, na.rm = TRUE), total_athletes=n())
+
+olympics_summary_long <- olympics_summary |> 
+  pivot_longer(
+    cols = c(avg_age, min_age, max_age, total_athletes), 
+    names_to = "metric", 
+    values_to = "value"
+  )
+
+olympics_4 <- left_join(olympics_3,olympics_summary_long, by = "sport")
+
+clean_city <- function(city_name) {
+  gsub("^\\s+|\\s+$", "", city_name)}
+
+olympics_5 <- olympics_4 |>
+  mutate(city = sapply(city, clean_city))
+
+olympics_6 <- olympics_5 |>
+  mutate(year = as.factor(year))
+
+olympics_7 <- olympics_6 |> mutate(sport = fct_relevel(sport, "Athletics"))
+
+olympics_8 <- olympics_7 |> rename("athlete"="name")
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.\\
+
+```{r}
+top_5_sports <- olympics_8 |>
+  group_by(sport) |>
+  summarize(median_age = median(age, na.rm = TRUE)) |>
+  arrange(desc(median_age)) |>
+  slice_head(n = 5)
+
+filtered_data <- olympics_8 |>
+  filter(sport %in% top_5_sports$sport)
+
+ggplot(filtered_data, aes(x = reorder(sport, -age, FUN = median), y = age, fill = medal)) +
+  geom_violin(alpha = 0.7, trim = TRUE, color = "black") +
+  geom_boxplot(width = 0.1, outlier.shape = NA, alpha = 0.5) +
+  facet_wrap(~ medal, ncol = 2) + 
+  labs(
+    title = "Age Distribution for Top 5 Sports by Medal Type",
+    subtitle = "Focused analysis on sports with the highest median ages",
+    caption = "Source: Tidytuesday Olympics dataset (2024)",
+    x = "Sport",
+    y = "Age"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    axis.text.x = element_text(size = 10, angle = 30, hjust = 1),
+    legend.position = "none",
+    panel.grid.major.x = element_blank()  
+  ) +
+  coord_flip()
+
+```
+
+```{r}
+top_3_cities <- olympics_8 |>
+  group_by(city) |>
+  summarize(total_count = n()) |>
+  arrange(desc(total_count)) |>
+  slice_head(n = 3)
+
+filtered_city_data <- olympics_8 |>
+  filter(city %in% top_3_cities$city) |>
+  group_by(city, medal) |>
+  summarize(count = n(), .groups = "drop")
+
+ggplot(filtered_city_data, aes(x = reorder(city, count), y = count, fill = medal)) +
+  geom_col(width = 0.7, alpha = 0.9, color = "black") +  
+  geom_text(
+    aes(label = count),
+    position = position_stack(vjust = 1.05),  
+    size = 5, color = "black", fontface = "bold"
+  ) +
+  coord_flip() +  
+  facet_wrap(~ medal, ncol = 3, scales = "free_x") + 
+  labs(
+    title = "Top 3 Cities by Medal Count (Faceted by Medal Type)",
+    subtitle = "Horizontal layout with labels for Gold, Silver, and Bronze",
+    caption = "Source: Tidytuesday Olympics dataset (2024)",
+    x = "City",
+    y = "Medal Count",
+    fill = "Medal Type"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    axis.text.y = element_text(size = 12),
+    axis.text.x = element_text(size = 10), 
+    strip.text = element_text(size = 14, face = "bold"), 
+    legend.position = "bottom"
+  )
+
+```
+
+### Conclusion 
+
+In our analysis we found the following insights:
+
+-   **Age and Experience:** Higher median ages in sports like Roque and Croquet emphasize the factor experience.
+
+-   **Physical Traits:** Age-height and age-weight relationships vary by sex and medal status, revealing physiological and performance trends.
+
+-   **Predictive Models:** The relationship between age and weight, categorized by medal status, suggests notable trends where medal-winning athletes tend to cluster around specific ranges of age and physical traits.
+
+These insights deepen our understanding of athletic success and how factors like age, height and sex contributes to the ultimate athlete goal of winning Olympic medals.
+
+### Limitations 
+
+Key limitations include:
+
+-   **Data Quality:** Missing or incomplete records.
+
+-   **Unaccounted Factors:** Socio-economic and geopolitical influences, training conditions, and temporal biases are known to have a big impact in Olympic performance, those were not taken into consideration though.
+
+-   **Sport Coverage:** Broader trends across disciplines were not analyzed.
+
+Future research could enhance these findings by using richer datasets, advanced machine learning, and a wider scope of variables
