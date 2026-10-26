@@ -3,8 +3,6 @@ title: "Olympics Dataset Analysis"
 output: pdf_document
 ---
 
-This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code.
-
 ### Introduction 
 
 Hosted every 4 years, the Olympics is the biggest sporting event in the world and it reunites thousands of athletes from all different countries, genders, cultures, heights, ages and so on, trying their best to achieve a gold, silver or bronze medal. Being such a huge and diverse event, this also means there is plenty of data available to be explored and understood, and many insights to be found. This report delves into the patterns and trends within the Olympic dataset, exploring the attributes of medal-winning athletes, the distribution of success across different cities, and the relationships between key performance indicators such as age, weight, height, and sex. By exploring these factors we want to deeper understand what defines success at the Olympics.
@@ -21,13 +19,8 @@ In this analysis I decided to focus on a couple of specific factors, such as the
 
 4.  Predictive Modeling: Can patterns within the dataset be utilized to predict key outcomes, such as future winners?
 
-Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*.
-
 ```{r}
 library(tidyverse)
-library(ggrepel)
-library(arrow)
-library(tidymodels)
 ```
 
 ```{r}
@@ -65,12 +58,6 @@ olympics_7 <- olympics_6 |> mutate(sport = fct_relevel(sport, "Athletics"))
 
 olympics_8 <- olympics_7 |> rename("athlete"="name")
 ```
-
-Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
-
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
-
-The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.\\
 
 ```{r}
 top_5_sports <- olympics_8 |>

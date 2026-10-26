@@ -1,86 +1,94 @@
 # 🏅 Olympics Data Analysis in R
 
-This project explores trends in Olympic athlete performance using **R**, with data cleaning, visualization, and modeling through **tidyverse** and **tidymodels**.
+An R Markdown report that cleans the 2024 TidyTuesday Olympics dataset with the **tidyverse** and visualizes how athlete age and host city relate to medal outcomes.
 
 ---
 
 ## 📊 Overview
-The Olympics bring together thousands of athletes across diverse sports.  
-This analysis examines how **age, physical traits, and event characteristics** relate to performance and medal outcomes using the 2024 TidyTuesday Olympics dataset.
+The Olympics bring together thousands of athletes across diverse sports.
+This analysis (`Project.Rmd`) loads the [TidyTuesday Olympics dataset (2024-08-06)](https://github.com/rfordatascience/tidytuesday/tree/main/data/2024/2024-08-06) directly from GitHub, cleans it, and produces two plots plus a written conclusion and limitations section. It knits to a PDF report.
 
 ---
 
 ## 🎯 Research Goals
-1. **Age Trends Across Sports** – Do certain sports favor older or more experienced athletes?  
-2. **City-Level Performance** – Which cities have historically hosted the most successful events?  
-3. **Physical Attributes** – How do age, height, weight, and sex relate to success?  
-4. **Predictive Modeling** – Can we use athlete data to predict future outcomes?
+The report frames four research questions:
+1. **Age Trends Across Sports** – Do certain sports favor older or more experienced athletes?
+2. **City-Level Performance** – Which cities have historically hosted the most successful events?
+3. **Physical Attributes** – How do age, height, weight, and sex relate to success?
+4. **Predictive Modeling** – Can patterns in the data be used to predict outcomes such as future winners?
+
+The current notebook contains code for questions 1 and 2; questions 3 and 4 are discussed only in the written conclusion (there are no physical-attribute plots or models in the code).
 
 ---
 
 ## ⚙️ Data Cleaning
-Steps included:
-- Replaced missing medals with `"None"`  
-- Removed redundant `games` column  
-- Replaced hyphens with spaces in `sport` and `event`  
-- Created summarized dataset with `avg_age`, `min_age`, `max_age`, and `total_athletes` per sport  
-- Cleaned city names using a custom `gsub`/`sapply` function  
-- Converted `year` to factor and set `"Athletics"` as base sport  
+Steps performed in the second code chunk:
+- Replaced missing medals with `"None"`
+- Replaced hyphens with spaces in `sport` and `event`
+- Dropped the redundant `games` column (column 9)
+- Computed `avg_age`, `min_age`, `max_age`, and `total_athletes` per sport, pivoted them to long format, and joined them back onto the athlete rows
+- Trimmed leading/trailing whitespace from city names with a custom `gsub`/`sapply` function
+- Converted `year` to a factor and set `"Athletics"` as the first level of `sport`
 - Renamed `name` → `athlete`
-
-> These cleaning steps used advanced R functions (`left_join`, `gsub`, `fct_relevel`, `rename`), going beyond basic requirements.
 
 ---
 
 ## 📈 Exploratory Analysis
 
-### 1. Age by Sport & Medal  
-Violin and boxplots show that sports like **Roque**, **Croquet**, and **Polo** have higher median athlete ages, emphasizing experience-based success.
+### 1. Age by Sport & Medal
+Violin and box plots of age for the five sports with the highest median athlete age (Roque, Art Competitions, Alpinism, Polo, Croquet), faceted by medal type.
 
-### 2. Top Cities by Medal Count  
-Bar charts reveal **London**, **Sydney**, and **Athina** as the most frequent hosts with large medal counts. 
-
-### 3. Physical Attributes  
-Scatterplots highlight:
-- **Age vs Weight**, colored by medal  
-- **Age vs Height**, colored by sex  
-These plots reveal clustering by sex and performance level.
-
----
-
-## 🤖 Modeling
-Built multiple **linear regression models** using `tidymodels`:
-
-- **Physical Models:** `age ~ height + weight + sex + year`
-  - Tested interaction and dummy variable combinations.  
-- **Age Models:** `age ~ avg_age + min_age + max_age + total_athletes + medal`
-  - Added interaction terms (`min_age:medal`) for better accuracy.  
-
-**Results:**
-- Interaction terms improved model fit (lower RMSE, higher R²).  
-- Removing variables had minor effects.  
-- Best model: *Age model with interaction term*. 
+### 2. Top Cities by Medal Count
+Faceted horizontal bar charts of entry counts by medal type for the three host cities with the most entries (London, Athina, Sydney).
 
 ---
 
 ## 🧠 Insights
-- **Older sports** (e.g., Roque, Croquet) favor experience.  
-- **Medal-winning athletes** tend to cluster in consistent physical ranges.  
-- **Age-height-weight** relationships differ by sex and medal type.  
-- **Best model** shows interactions between minimum age and medal predict age patterns effectively.
+- **Older sports** (e.g., Roque, Croquet) have higher median athlete ages, suggesting experience matters.
+- The conclusion also discusses age, height, weight, and sex trends, which are not yet backed by plots or models in the notebook.
 
 ---
 
 ## ⚠️ Limitations
-- Missing or incomplete records  
-- No inclusion of training, socioeconomic, or geopolitical variables  
-- Focus limited to certain sports - broader generalizations may vary 
+- Missing or incomplete records
+- No training, socioeconomic, or geopolitical variables
+- Limited sport coverage – broader generalizations may vary
 
 ---
 
-## 📚 Tools Used
-- **R Packages:** tidyverse, ggplot2, tidymodels, ggrepel, arrow  
-- **Data Source:** [TidyTuesday Olympics Dataset (2024-08-06)](https://github.com/rfordatascience/tidytuesday)
+## 📁 Project Structure
+```
+Project.Rmd   # R Markdown report: data loading, cleaning, plots, conclusion
+README.md
+```
 
 ---
 
+## 🛠️ Tech Stack
+- **R** with **tidyverse** (readr, dplyr, tidyr, stringr, forcats, ggplot2)
+- **R Markdown** (rmarkdown + knitr), rendered to PDF
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+- R (tested with 4.1) and, optionally, RStudio
+- R packages: `tidyverse`, `rmarkdown`, `knitr`
+- A LaTeX distribution for the default PDF output (e.g. TinyTeX via `tinytex::install_tinytex()`)
+- Internet access – the dataset is downloaded at run time from `raw.githubusercontent.com`
+
+### Install packages
+```r
+install.packages(c("tidyverse", "rmarkdown", "knitr"))
+```
+
+### Render the report
+From the repository root:
+```bash
+Rscript -e 'rmarkdown::render("Project.Rmd")'                                   # PDF (needs LaTeX)
+Rscript -e 'rmarkdown::render("Project.Rmd", output_format = "html_document")'  # HTML (no LaTeX needed)
+```
+Or open `Project.Rmd` in RStudio and click **Knit**.
+
+No environment variables or secrets are required.
